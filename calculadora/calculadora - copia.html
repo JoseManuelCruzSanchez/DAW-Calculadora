@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora</title>
+    <link rel="stylesheet" href="css-calculadora.css">
+</head>
+<body onkeydown="teclado(event)">
+
+<div id="contenedor" class="contenedor-normal">
+    <canvas id="cv" class="oculto" width="649" height="314" style="border:1px solid #000000;background-color: #edede8"></canvas>
+
+    <select id="selector" onchange="skin(this)">
+        <option value="#4E648E" selected>Azul</option>
+        <option value="#805615">Amarillo</option>
+        <option value="#577714">Verde</option>
+    </select>
+    <button id="modoCalculadora" class="btn" onclick="cambiarModo(this)">Cientifica</button>
+    <button id="reset" class="btn" onclick="resetearTodo()" data-valor="reset">CE</button>
+
+    <input id="salidaDatos" readonly>
+
+    <button class="btn" onclick="clickado(this)" data-valor="7">7</button>
+    <button class="btn" onclick="clickado(this)" data-valor="8">8</button>
+    <button class="btn" onclick="clickado(this)" data-valor="9">9</button>
+    <button class="btn" onclick="clickado(this)" data-valor="/">/</button>
+    <button class="btn" onclick="clickado(this)" data-valor="4">4</button>
+    <button class="btn" onclick="clickado(this)" data-valor="5">5</button>
+    <button class="btn" onclick="clickado(this)" data-valor="6">6</button>
+    <button class="btn" onclick="clickado(this)" data-valor="*">*</button>
+    <button class="btn" onclick="clickado(this)" data-valor="1">1</button>
+    <button class="btn" onclick="clickado(this)" data-valor="2">2</button>
+    <button class="btn" onclick="clickado(this)" data-valor="3">3</button>
+    <button class="btn" onclick="clickado(this)" data-valor="-">-</button>
+    <button class="btn" onclick="clickado(this)" data-valor="0">0</button>
+    <button class="btn" onclick="clickado(this)" data-valor=".">.</button>
+    <button class="btn" onclick="clickado(this)" data-valor="=">=</button>
+    <button class="btn" onclick="clickado(this)" data-valor="+">+</button>
+    <!-- CIENTIFICA -->
+    <button id="radianes" class="btn cientifica oculto" onclick="clickado(this)" data-valor="RADIANES">RADIAN</button>
+    <button id="grados" class="btn cientifica oculto" onclick="clickado(this)" data-valor="GRADOS">GRAD</button>
+    <button id="funciones" class="btn cientifica oculto" onclick="clickado(this)" data-valor="FUNCIONES">F(x)</button>
+
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="POTENCIA">POT</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="ABS">ABS</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="SEN">SEN</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="COS">COS</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="TAN">TAN</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="LOG10">LOG10</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="LOG2">LOG2</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="LN">LN</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="SQRT">SQRT</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="RAIZN">RAIZ N</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="PI">PI</button>
+    <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="E">E</button>
+</div>
+
+<p>¿Cómo corrijo la desviación decimal que causa el float?</p>
+<p>¿LN?</p>
+
+<script>
+    var operacion = '';
+    var x = '';
+    var y = '';
+    var anguloTipo = 'radianes';
+
+    var salida = document.querySelector('#salidaDatos');
+    salida.value = 0;
+
+    function resetearTodo(){
+        operacion = '';
+        x = '';
+        y = '';
+        salida.value = 0;
+    }
+
+    function resetearVariables(resultado){
+        operacion = '';
+        x = resultado;
+        y = '';
+    }
+
+    function clickado(o){
+        var btn = o.dataset.valor;
+        if(btn === "/" || btn === "*" || btn === "-" || btn === "+" || btn === 'POTENCIA' || btn === 'RAIZN'){
+            operacion = btn;
+            if(salida.value === '0'){/*Operación con el 0 en pantalla*/
+                x = 0;
+            }
+        }
+        else if(btn === 'ABS'){
+            salida.value = Math.abs(Number(salida.value));
+            resetearVariables(salida.value);
+        }
+        else if(btn === 'SEN'){
+            if(anguloTipo === 'grados'){
+                salida.value = Math.sin(Number(salida.value)*Math.PI/180);
+            }else{
+                salida.value = Math.sin(Number(salida.value));
+            }
+            resetearVariables(salida.value);
+        }
+        else if(btn === 'COS'){
+            if(anguloTipo === 'grados'){
+                salida.value = Math.cos(Number(salida.value)*Math.PI/180);
+            }else{
+                salida.value = Math.cos(Number(salida.value));
+            }
+            resetearVariables(salida.value);
+        }
+        else if(btn === 'TAN'){
+            if(anguloTipo === 'grados'){
+                salida.value = Math.tan(Number(salida.value)*Math.PI/180);
+            }else{
+                salida.value = Math.tan(Number(salida.value));
+            }
+            resetearVariables(salida.value);
+        }
+        else if(btn === 'SQRT'){
+            salida.value = Math.sqrt(Number(salida.value));
+        }
+        else if(btn === 'RADIANES'){
+            anguloTipo = 'radianes';
+            o.style.backgroundColor = '#F23A72';
+            document.getElementById('grados').style.backgroundColor = 'grey';
+        }
+        else if(btn === 'GRADOS'){
+            anguloTipo = 'grados';
+            o.style.backgroundColor = '#F23A72';
+            document.getElementById('radianes').style.backgroundColor = 'grey';
+        }
+        else if(btn === '.'){
+            if(operacion === ''){/*En 1º o 2º cajón*/
+                if(x.indexOf('.') === -1){
+                    if(x === ''){
+                        x += '0.';
+                        salida.value = x;
+                    }else{
+                        x += '.';
+                        salida.value = x;
+                    }
+                }
+            }else{
+                if(y.indexOf('.') === -1){
+                    if(y === ''){
+                        y += '0.';
+                        salida.value = y;
+                    }else{
+                        y += '.';
+                        salida.value = y;
+                    }
+                }
+            }
+        }
+        else if(btn === '='){
+            if(operacion !== '' && x !== '' && y !== ''){
+                if(operacion === '/'){
+                    salida.value = dividir(parseFloat(x), parseFloat(y));
+                    resetearVariables(salida.value);
+                }
+                else if(operacion === '*'){
+                    salida.value = multiplicar(parseFloat(x), parseFloat(y));
+                    resetearVariables(salida.value);
+                }
+                else if(operacion === '-'){
+                    salida.value = restar(parseFloat(x), parseFloat(y));
+                    resetearVariables(salida.value);
+                }
+                else if(operacion === '+'){
+                    salida.value = sumar(parseFloat(x), parseFloat(y));
+                    resetearVariables(salida.value);
+                }
+                else if(operacion === 'POTENCIA'){
+                    salida.value = Math.pow(x, y);
+                    resetearVariables(salida.value);
+                }
+                else if(operacion === 'RAIZN'){
+                    salida.value = Math.pow(x, (1/y));
+                    resetearVariables(salida.value);
+                }
+            }
+        }
+        else{/*es un numero*/
+            if(operacion === ''){/*En 1º o 2º cajón*/
+                if(btn === 'PI'){
+                    if(x === ''){
+                        x += Math.PI;
+                        salida.value = x;
+                    }
+                }
+                else if(btn === 'E'){
+                    if(x === ''){
+                        x += Math.E;
+                        salida.value = x;
+                    }
+                }else if(btn === 'LOG10'){
+                    if(x === ''){
+                        x += Math.log(10);
+                        salida.value = x;
+                    }
+                }else if(btn === 'LOG2'){
+                    if(x === ''){
+                        x += Math.log(2);
+                        salida.value = x;
+                    }
+                }else if(btn === 'LN'){
+                    if(x === ''){
+                        x += Math.LN10;
+                        salida.value = x;
+                    }
+                }else{
+                    if(btn === '0'){/*para no meter 0's a cascoporro*/
+                        if(x === '0'){
+                            x = btn;
+                            salida.value = x;
+                        }else{
+                            x += btn;
+                            salida.value = x;
+                        }
+                    }else{/*nº diferente al 0*/
+                        if(x === '0'){/*si hay un cero previo*/
+                            x = btn;
+                            salida.value = x;
+                        }else{
+                            x += btn;
+                            salida.value = x;
+                        }
+                    }
+                }
+            }else{
+                if(btn === 'PI'){
+                    if(y === ''){
+                        y += Math.PI;
+                        salida.value = y;
+                    }
+                }
+                else if(btn === 'E'){
+                    if(y === ''){
+                        y += Math.E;
+                        salida.value = y;
+                    }
+                }else if(btn === 'LOG10'){
+                    if(y === ''){
+                        y += Math.log(10);
+                        salida.value = y;
+                    }
+                }else if(btn === 'LOG2'){
+                    if(y === ''){
+                        y += Math.log(2);
+                        salida.value = y;
+                    }
+                }else if(btn === 'LN'){
+                    if(y === ''){
+                        y += Math.LN10;
+                        salida.value = y;
+                    }
+                }else{
+                    if(btn === '0'){/*para no meter 0's a cascoporro*/
+                        if(y === '0'){
+                            y = btn;
+                            salida.value = y;
+                        }else{
+                            y += btn;
+                            salida.value = y;
+                        }
+                    }else{/*nº diferente al 0*/
+                        if(y === '0'){/*si hay un cero previo*/
+                            y = btn;
+                            salida.value = y;
+                        }else{
+                            y += btn;
+                            salida.value = y;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    /********************************  IMPLEMENTARRRRRR TECLADO???  *******************************************/
+    function teclado(event){
+    if(event.keyCode === 46){
+            resetearTodo();
+        }
+    }
+
+    function sumar(x, y){
+        return x + y;
+    }
+
+    function restar(x, y){
+        return x - y;
+    }
+
+    function multiplicar(x, y){
+        return x * y;
+    }
+
+    function dividir(x, y){
+        if(y !== 0){
+            return x / y;
+        }else{
+            return 'no puede dividir por 0';
+        }
+    }
+    function skin(o){
+        document.getElementById('contenedor').style.backgroundColor = o.options[o.options.selectedIndex].value;
+        var arrayBtns = document.getElementsByClassName('btn');
+        if(o.options[o.options.selectedIndex].value === '#4E648E'){
+            for(var i = 0; i < arrayBtns.length; i++){
+                arrayBtns[i].style.color = 'white';
+                arrayBtns[i].style.backgroundColor = '#152B55';
+            }
+            aplicaColorcitos();
+            document.getElementById('contenedor').style.boxShadow = '';
+        }
+        else if(o.options[o.options.selectedIndex].value === '#805615'){
+            for(var i = 0; i < arrayBtns.length; i++){
+                arrayBtns[i].style.color = 'white';
+                arrayBtns[i].style.backgroundColor = '#D4AB6A';
+            }
+            aplicaColorcitos();
+            document.getElementById('contenedor').style.boxShadow = '6px 9px 10px 0px #bfa6a6';
+        }
+        else if(o.options[o.options.selectedIndex].value === '#577714'){
+            for(var i = 0; i < arrayBtns.length; i++){
+                arrayBtns[i].style.color = 'white';
+                arrayBtns[i].style.backgroundColor = '#A7C763';
+            }
+            aplicaColorcitos();
+            document.getElementById('contenedor').style.boxShadow = '';
+        }
+    }
+
+    function aplicaColorcitos() {
+        if(anguloTipo === 'radianes'){
+            document.getElementById('radianes').style.backgroundColor = '#F23A72';
+            document.getElementById('grados').style.backgroundColor = 'grey';
+        }else{
+            document.getElementById('radianes').style.backgroundColor = 'grey';
+            document.getElementById('grados').style.backgroundColor = '#F23A72';
+        }
+    }
+
+    function cambiarModo(o) {
+        if(o.innerHTML === 'Cientifica'){
+            o.innerHTML = 'Normal';
+            var btnsOcultos = Array.from(document.getElementsByClassName('oculto'));
+            for(var i = 0; i < btnsOcultos.length; i++){
+                btnsOcultos[i].classList.add('mostrar');
+                btnsOcultos[i].classList.remove('oculto');
+                console.log(btnsOcultos[i].innerHTML);
+            }
+            document.getElementById('contenedor').className = 'contenedor-cientifica';
+        }else{
+            o.innerHTML = 'Cientifica';
+            var btns = Array.from(document.getElementsByClassName('mostrar'));
+            for(var i = 0; i < btns.length; i++){
+                btns[i].classList.add('oculto');
+                btns[i].classList.remove('mostrar');
+            }
+            document.getElementById('contenedor').className = 'contenedor-normal';
+        }
+    }
+</script>
+</body>
+</html>

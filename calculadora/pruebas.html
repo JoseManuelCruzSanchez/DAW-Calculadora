@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Expresion:<input id="exp" type="text" onchange="actualizar()"><br><br>
+x:<input id="x" type="number" onchange="actualizar()">
+<button onclick="resultadoSumarExpresionAlgebraica()">Go!</button>
+
+<script>
+    var expAlgebraica = '';
+    var i;
+    function actualizar() {
+        expAlgebraica = document.getElementById('exp').value.split('+');
+        i = Number(document.getElementById('x').value);
+    }
+
+
+
+
+    function resultadoSumarExpresionAlgebraica(/*i, expAlgebraica*/) {
+        let xTotal = 0;/*En las otras funciones es en lo que se utiliza la i del bucle*/
+        let numIzq = '';
+        let numDrch = '';
+        let arrayTotal = new Array();
+        for(let j = 0; j < expAlgebraica.length; j++){/* 55X^551 Recorre el array expAlgebraica*/
+            if(expAlgebraica[j].indexOf('X') !== -1){/*Habemus x*/
+                xTotal = i;
+                numIzq = expAlgebraica[j].substring(0, expAlgebraica[j].indexOf('X'));
+                if(expAlgebraica[j].indexOf('^') !== -1){/*Habemus una x y potencia*/
+                    numDrch = expAlgebraica[j].substring(expAlgebraica[j].indexOf('^')+1);
+                    numDrch = Number(numDrch);
+                    xTotal = Math.pow(xTotal, numDrch);
+                    if(numIzq !== ''){/*Habemus numIzq x y potencia*/
+                        numIzq = Number(numIzq);
+                        xTotal = numIzq * xTotal;
+                    }
+                }
+            }else{/*No hay x*/
+                if(expAlgebraica.indexOf('^') !== -1){/*Habemus una potencia*/
+                    numIzq = expAlgebraica[j].substring(0, expAlgebraica[j].indexOf('^'));
+                    numDrch = expAlgebraica[j].substring(expAlgebraica[j].indexOf('^')+1);
+                    xTotal = Math.pow(numIzq, numDrch);
+                }else{/*No hay potencia*/
+                    xTotal = Number(expAlgebraica);
+                }
+            }
+
+            arrayTotal.push(xTotal);
+        }
+        return arrayTotal.reduce(function(a, b){ return a + b; });/*Sumamos todos los elementos del array*/
+        //console.log(arrayTotal.reduce(function(a, b){ return a + b; }))
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*let xTotal = 0;
+    let numIzq = '';
+    let numDrch = '';
+    if(expAlgebraica.indexOf('X') !== -1){
+        xTotal = i;
+    }
+    numIzq = expAlgebraica.substring(0, expAlgebraica.indexOf('X'));
+    if(expAlgebraica.indexOf('^') !== -1){
+        numDrch = expAlgebraica.substring(expAlgebraica.indexOf('^')+1);
+    }
+    if(numIzq !== ''){
+        numIzq = Number(numIzq);
+    }
+    if(numDrch !== ''){
+        numDrch = Number(numDrch);
+    }
+    if(numDrch !== ''){
+        xTotal = Math.pow(xTotal, numDrch);
+        if(numIzq !== ''){
+            xTotal *= numIzq;
+        }
+    }
+    else if(numIzq !== ''){
+        xTotal = xTotal * numIzq;
+    }
+    console.log('numIzq ' + numIzq);
+    console.log('numDrch ' + numDrch)
+    console.log('xTotal ' + xTotal)*/
+
+</script>
+
+</body>
+</html>

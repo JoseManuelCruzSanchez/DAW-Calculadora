@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<canvas id="cv" class="oculto" width="400" height="400" style="border:1px solid #000000;background-color: #edede8"></canvas>
+
+
+	<script type="text/javascript">
+		var c = document.getElementById("cv");
+		var ctx = c.getContext("2d");
+        ctx.lineWidth = 1;
+		ctx.strokeStyle = '#009900';
+		/*Linea verde horizontal*/
+		ctx.moveTo(0, 200.5);
+		ctx.lineTo(400, 200.5);
+		ctx.stroke();
+		/*Linea verde vertical*/
+		ctx.moveTo(200.5, 0);
+		ctx.lineTo(200.5, 400);
+		ctx.stroke();
+
+        ctx.translate(200.5,200);/*Trasladamos la coordenada 0,0*/
+
+		/* Y=X2 */
+		for(let i = -20; i < 20; i++){
+            let i_mas1 = i+1;
+            pintarLinea(i, -(i*i), i_mas1, -((i_mas1)*(i_mas1)), '#f90202');/*La y es negativa porque sino va hacia abajo*/
+            //pintarPunto(i, -(i*i), '#2483f9');
+		}
+
+		/* Y=2+X+4X2+X3+5X4 */
+        for(let i = -20; i < 20; i++){
+			let i_mas1 = i+1;
+			let y = -(2+i+(4*i*i)+(i*i*i)+(5*i*i*i*i));
+			let y_mas1 = -(2+i_mas1+(4*i_mas1*i_mas1)+(i_mas1*i_mas1*i_mas1)+(5*i_mas1*i_mas1*i_mas1*i_mas1));
+			//console.log(i + " " + y)
+            pintarLinea(i, y, i+1, y_mas1, '#1126f9');/*La y es negativa porque sino va hacia abajo*/
+            //pintarPunto(i, y, '#2483f9');
+        }
+
+		function pintarLinea(desdeX, desdeY, hastaX, hastaY, color){
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.moveTo(desdeX, desdeY);
+            ctx.lineTo(hastaX, hastaY);
+            ctx.stroke();
+		}
+
+		function pintarPunto(x, y, color) {
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.fillRect(x, y, 1, 1);
+            ctx.stroke();
+        }
+	</script>
+
+</body>
+</html>

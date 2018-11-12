@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<canvas id="cv" class="oculto" width="400" height="400" style="border:1px solid #000000;background-color: #edede8"></canvas>
+
+
+<script type="text/javascript">
+    var c = document.getElementById("cv");
+    var ctx = c.getContext("2d");
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#009900';
+    /*Linea verde horizontal*/
+    ctx.moveTo(0, 200.5);
+    ctx.lineTo(400, 200.5);
+    ctx.stroke();
+    /*Linea verde vertical*/
+    ctx.moveTo(200.5, 0);
+    ctx.lineTo(200.5, 400);
+    ctx.stroke();
+
+    function crearRejilla(posBucle) {
+        console.log("hola")
+        ctx.strokeStyle = '#05f2f2';
+        ctx.beginPath();
+        /*Linea verde horizontal*/
+        ctx.moveTo(0, posBucle+0.5);
+        ctx.lineTo(400, posBucle+0.5);
+        ctx.stroke();
+        /*Linea verde vertical*/
+        ctx.moveTo(posBucle+0.5, 0);
+        ctx.lineTo(posBucle+0.5, 400);
+        ctx.stroke();
+    }
+
+    for(let i = 20; i <= 400; i = i + 20){
+        crearRejilla(i);
+    }
+
+    ctx.translate(200.5,200);/*Trasladamos la coordenada 0,0*/
+
+
+    function pintarLinea(desdeX, desdeY, hastaX, hastaY, color){
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.moveTo(desdeX, desdeY);
+        ctx.lineTo(hastaX, hastaY);
+        ctx.stroke();
+    }
+
+    function pintarPunto(x, y, color) {
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.fillRect(x, y, 1, 1);
+        ctx.stroke();
+    }
+</script>
+
+</body>
+</html>
