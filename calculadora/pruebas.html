@@ -6,52 +6,61 @@
 </head>
 <body>
 Expresion:<input id="exp" type="text" onchange="actualizar()"><br><br>
-x:<input id="x" type="number" onchange="actualizar()">
+x:<input id="pos" type="number" onchange="actualizar()">
 <button onclick="resultadoSumarExpresionAlgebraica()">Go!</button>
-
+<br><br>
+<h1>5x^2x-2x+5x</h1>
+<h1>-5x^-2x-2x+5x</h1>
 <script>
     var expAlgebraica = '';
-    var i;
+    var x;
     function actualizar() {
-        expAlgebraica = document.getElementById('exp').value.split('+');
-        i = Number(document.getElementById('x').value);
+        expAlgebraica = document.getElementById('exp').value;
+        i = Number(document.getElementById('pos').value);
     }
 
 
 
 
-    function resultadoSumarExpresionAlgebraica(/*i, expAlgebraica*/) {
-        let xTotal = 0;/*En las otras funciones es en lo que se utiliza la i del bucle*/
+
+    function resultadoSumarExpresionAlgebraica(/*Aqui son variables globales: x, expAlgebraica*/) {/*x valor eje x en un momento dado del bucle*/
+        let xTotal = 0;
         let numIzq = '';
         let numDrch = '';
-        let arrayTotal = new Array();
-        for(let j = 0; j < expAlgebraica.length; j++){/* 55X^551 Recorre el array expAlgebraica*/
-            if(expAlgebraica[j].indexOf('X') !== -1){/*Habemus x*/
-                xTotal = i;
-                numIzq = expAlgebraica[j].substring(0, expAlgebraica[j].indexOf('X'));
-                if(expAlgebraica[j].indexOf('^') !== -1){/*Habemus una x y potencia*/
-                    numDrch = expAlgebraica[j].substring(expAlgebraica[j].indexOf('^')+1);
-                    numDrch = Number(numDrch);
-                    xTotal = Math.pow(xTotal, numDrch);
-                    if(numIzq !== ''){/*Habemus numIzq x y potencia*/
-                        numIzq = Number(numIzq);
-                        xTotal = numIzq * xTotal;
+        let arrayTotal = [];
+        let ultimoCorte = 0;/*Donde acaba un polinomio, encontramos un - o un +*/
+
+        if(expAlgebraica.indexOf('-') === -1 && expAlgebraica.indexOf('+')){/*Solo contiene un polinomio*/
+            /*No hay ni - ni +*/
+            /*evaluamos*/
+            console.log("********");
+            evaluarPolinomio(x, expAlgebraica);
+            console.log("********");
+        }else{
+            for(let i = 0; i < expAlgebraica.length; i++){
+                if((expAlgebraica[i] === '-' || expAlgebraica[i] === '+') && i !== 0){
+                    if(expAlgebraica[i-1] !== '^'){
+                        evaluarPolinomio(x, expAlgebraica.substring(ultimoCorte, i));
+                        ultimoCorte = i;
                     }
                 }
-            }else{/*No hay x*/
-                if(expAlgebraica.indexOf('^') !== -1){/*Habemus una potencia*/
-                    numIzq = expAlgebraica[j].substring(0, expAlgebraica[j].indexOf('^'));
-                    numDrch = expAlgebraica[j].substring(expAlgebraica[j].indexOf('^')+1);
-                    xTotal = Math.pow(numIzq, numDrch);
-                }else{/*No hay potencia*/
-                    xTotal = Number(expAlgebraica);
-                }
+                arrayTotal.push(xTotal);
             }
-
-            arrayTotal.push(xTotal);
+            evaluarPolinomio(x, expAlgebraica.substring(ultimoCorte));
         }
-        return arrayTotal.reduce(function(a, b){ return a + b; });/*Sumamos todos los elementos del array*/
+
+
+        //return arrayTotal.reduce(function(a, b){ return a + b; });/*Sumamos todos los elementos del array*/
         //console.log(arrayTotal.reduce(function(a, b){ return a + b; }))
+    }
+
+    function evaluarPolinomio(x, polinomio) {
+        console.log("Polinomio" + polinomio);
+        if(polinomio.indexOf('X') !== -1){/*Contiene X*/
+            console.log("contien")
+        }else{
+            
+        }
     }
 
 

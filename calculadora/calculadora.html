@@ -48,7 +48,6 @@
     <button id="radianes" class="btn cientifica oculto" onclick="clickado(this)" data-valor="RADIANES">RADIAN</button>
     <button id="grados" class="btn cientifica oculto" onclick="clickado(this)" data-valor="GRADOS">GRAD</button>
     <button id="funciones" class="btn cientifica oculto uso-canvas" onclick="clickado(this)" data-valor="FUNCIONES">F(x)</button>
-
     <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="POTENCIA">POT</button>
     <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="ABS">ABS</button>
     <button class="btn cientifica oculto" onclick="clickado(this)" data-valor="SEN">SEN</button>
@@ -78,25 +77,34 @@
         if(modoFuncionesCanvasActivado){
             operacion = '';
             x = '';
-            salida.value = 'F(x) = ';
+            salida.value = 'F(x) = ';/**********************************RESETEO CANVAS***********************************/
+            canvasEnBlancoConEjesHorizontalYVertical(true);
         }else{
             operacion = '';
             x = '';
             y = '';
             salida.value = 0;
         }
-
     }
 
     function resetearVariables(resultado){
         operacion = '';
-        x = resultado;
+        if(isNaN(resultado)){
+            x = '';
+        }else{
+            x = resultado;
+        }
         y = '';
     }
 
     let c = document.getElementById("cv");
     let ctx = c.getContext("2d");
-    function canvasEnBlancoConEjesHorizontalYVertical() {
+    function canvasEnBlancoConEjesHorizontalYVertical(vieneDeBotonResetearTodo) {
+        if(vieneDeBotonResetearTodo){
+            ctx.translate(-324.5,-157.5);
+        }
+        ctx.fillStyle="#ceffca";
+        ctx.fillRect(0,0,649,314);
         ctx.lineWidth = 1;
         ctx.strokeStyle = '#009900';
         /*Linea verde horizontal*/
@@ -155,28 +163,30 @@
         else if(funcion !== 'F(x) = '){/*Si hay funcion de tipo algebraica*/
             let expAlgebraica = funcion.substring(7).split('+');
 
-            for(let i = xCotaInferior; i < xCotaSuperior; i++){/*Recorre los valores de x uno a uno*/
-                let i_mas1 = i+1;
-                let y = -(resultadoSumarExpresionAlgebraica(i, expAlgebraica));
-                let y_mas1 = -(resultadoSumarExpresionAlgebraica(i_mas1, expAlgebraica));
-                pintarLinea(i*paso, y*paso, (i+1)*paso, (y_mas1)*paso, '#f21d00');/*La y es negativa porque sino va hacia abajo*/
-                console.log('i ' + i)
-                console.log('i_mas1 ' + i_mas1)
-                console.log('y ' + y)
-                console.log('y_mas1 ' + y_mas1)
+            for(let x = xCotaInferior; x < xCotaSuperior; x++){/*Recorre los valores de x uno a uno*/
+                let x_mas1 = x+1;
+                let y = -(resultadoSumarExpresionAlgebraica(x, expAlgebraica));
+                let y_mas1 = -(resultadoSumarExpresionAlgebraica(x_mas1, expAlgebraica));
+                pintarLinea(x*paso, y*paso, (x+1)*paso, (y_mas1)*paso, '#f21d00');/*La y es negativa porque sino va hacia abajo*/
+                console.log('x ' + x);
+                console.log('x_mas1 ' + x_mas1);
+                console.log('y ' + y);
+                console.log('y_mas1 ' + y_mas1);
                 console.log('**********************')
             }
         }
     }
 
-    function resultadoSumarExpresionAlgebraica(i, expAlgebraica) {
+    function resultadoSumarExpresionAlgebraica(x, expAlgebraica) {
         let xTotal = 0;/*En las otras funciones es en lo que se utiliza la i del bucle*/
         let numIzq = '';
         let numDrch = '';
-        let arrayTotal = new Array();
+        let arrayTotal = [];
+
         for(let j = 0; j < expAlgebraica.length; j++){/* 55X^551 Recorre el array expAlgebraica*/
+
             if(expAlgebraica[j].indexOf('X') !== -1){/*Habemus x*/
-                xTotal = i;
+                xTotal = x;
                 numIzq = expAlgebraica[j].substring(0, expAlgebraica[j].indexOf('X'));
                 if(expAlgebraica[j].indexOf('^') !== -1){/*Habemus una x y potencia*/
                     numDrch = expAlgebraica[j].substring(expAlgebraica[j].indexOf('^')+1);
@@ -196,9 +206,9 @@
                     xTotal = Number(expAlgebraica);
                 }
             }
-
             arrayTotal.push(xTotal);
         }
+
         return arrayTotal.reduce(function(a, b){ return a + b; });/*Sumamos todos los elementos del array*/
     }
 
@@ -212,6 +222,9 @@
 
     function clickado(o){
         let btn = o.dataset.valor;
+        /***********************************************************************************************************
+         *************  CANVAS    CANVAS    CANVAS    CANVAS    CANVAS    CANVAS    CANVAS    CANVAS  **************
+         **********************************************************************************************************/
         if(modoFuncionesCanvasActivado){/*Estamos en display de funciones en canvas*/
             if(btn === 'FUNCIONES'){/*Si pulsa el boton funciones volvemos a modo cientifica y ocultamos todoo relativo a canvas*/
                 modoFuncionesCanvasActivado = false;
@@ -226,7 +239,7 @@
                     botnsCanvas[i].classList.remove('canvas-color-activado');
                 }
                 resetearTodo();
-            }/*********************************************************************************************************************************************/
+            }/*******************************  REPRESENTAR GRAFICA  *************************************************************************/
             else if(btn === '='){/*************************************************************************************************************************/
                 representarGraficaCanvas(salida.value, 5, -500, 500);
             }
@@ -281,8 +294,10 @@
                     }
                 }
             }
-
-        }else{/*Modo normal o cientifica. No estamos en display de funciones con canvas*/
+            /***********************************************************************************************************
+             ****************  CALCULADORA NORMAL O CIENTIFICA  ********************************************************
+             **********************************************************************************************************/
+        }else{
             if(btn === "/" || btn === "*" || btn === "-" || btn === "+" || btn === 'POTENCIA' || btn === 'RAIZN'){
                 if(x[x.length-1] !== '.'){/*No permitir guardar una operación si hay '0.'*/
                     if(btn !== '-'){/*Cualquiera menos el - */
@@ -295,10 +310,12 @@
                     }
                     else if(btn === '-' && salida.value === '0' && operacion === ''){/*GUARDO EN x el negativo*/
                         x = btn;
+                        salida.value = x;
                     }
                     else if(btn === '-' && operacion !== ''){/*GUARDO EN y el negativo*/
                         if(y === ''){/*Si aun no se ha guardado un numero en y se guarda un negativo*/
                             y = btn;
+                            salida.value = y;
                         }
                     }
                     else{
@@ -308,7 +325,7 @@
             }
             else if(btn === 'ABS'){
                 salida.value = Math.abs(Number(salida.value));
-                resetearVariables(salida.value);
+                isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
             }
             else if(btn === 'SEN'){
                 if(anguloTipo === 'grados'){
@@ -316,7 +333,7 @@
                 }else{
                     salida.value = Math.sin(Number(salida.value));
                 }
-                resetearVariables(salida.value);
+                isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
             }
             else if(btn === 'COS'){
                 if(anguloTipo === 'grados'){
@@ -324,7 +341,7 @@
                 }else{
                     salida.value = Math.cos(Number(salida.value));
                 }
-                resetearVariables(salida.value);
+                isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
             }
             else if(btn === 'TAN'){
                 if(anguloTipo === 'grados'){
@@ -332,10 +349,18 @@
                 }else{
                     salida.value = Math.tan(Number(salida.value));
                 }
-                resetearVariables(salida.value);
+                isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
             }
             else if(btn === 'SQRT'){
                 salida.value = Math.sqrt(Number(salida.value));
+                isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
+            }
+            else if(btn === 'LOG10'){
+                salida.value = Math.log10(Number(salida.value));
+                isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
+            }else if(btn === 'LOG2'){/* Hablado con M.A. */
+                salida.value = Math.log2(Number(salida.value));
+                isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
             }
             else if(btn === 'RADIANES'){
                 anguloTipo = 'radianes';
@@ -387,32 +412,32 @@
                 if(operacion !== '' && x !== '' && y !== ''){
                     if(operacion === '/'){
                         salida.value = dividir(parseFloat(x), parseFloat(y));
-                        resetearVariables(salida.value);
+                        isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
                     }
                     else if(operacion === '*'){
                         salida.value = multiplicar(parseFloat(x), parseFloat(y));
-                        resetearVariables(salida.value);
+                        isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
                     }
                     else if(operacion === '-'){
                         salida.value = restar(parseFloat(x), parseFloat(y));
-                        resetearVariables(salida.value);
+                        isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
                     }
                     else if(operacion === '+'){
                         salida.value = sumar(parseFloat(x), parseFloat(y));
-                        resetearVariables(salida.value);
+                        isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
                     }
                     else if(operacion === 'POTENCIA'){
                         salida.value = Math.pow(x, y);
-                        resetearVariables(salida.value);
+                        isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
                     }
                     else if(operacion === 'RAIZN'){
                         salida.value = Math.pow(x, (1/y));
-                        resetearVariables(salida.value);
+                        isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
                     }
                 }
             }
             else{/*es un numero*/
-                if(operacion === ''){/*En 1º o 2º cajón*/
+                if(operacion === ''){/*En 1º operando (x o y)*/
                     if(btn === 'PI'){
                         if(x === ''){
                             x += Math.PI;
@@ -424,16 +449,6 @@
                             x += Math.E;
                             salida.value = x;
                         }
-                    }else if(btn === 'LOG10'){
-                        if(x === ''){
-                            x += Math.log(10);/* Hablado con M.A. */
-                            salida.value = x;
-                        }
-                    }else if(btn === 'LOG2'){/* Hablado con M.A. */
-                        if(x === ''){
-                            x += Math.log(2);
-                            salida.value = x;
-                        }
                     }else if(btn === 'LN'){
                         if(x === ''){
                             x += Math.LN10;
@@ -441,6 +456,7 @@
                         }else{
                             x = Math.log(x);
                             salida.value = x;
+                            isNaN(salida.value) ? resetearVariables('') : resetearVariables(salida.value);
                         }
                     }else{
                         if(btn === '0'){/*para no meter 0's a cascoporro*/
@@ -461,7 +477,7 @@
                             }
                         }
                     }
-                }else{
+                }else{/*En 2º operando (x o y)*/
                     if(btn === 'PI'){
                         if(y === ''){
                             y += Math.PI;
