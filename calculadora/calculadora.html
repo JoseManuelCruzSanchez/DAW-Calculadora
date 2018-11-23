@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="css-calculadora.css">
 </head>
 <body>
-
+<H1>NO DEJAR METER POTENCIA CON X</H1>
 <div id="contenedor" class="contenedor-normal">
     <canvas id="cv" class="canvas" width="649" height="314" style="border:1px solid #000000;background-color: #edede8"></canvas>
     <button class="btn uso-canvas canvas" onclick="clickado(this)" data-valor="CANVAS_X">X</button>
@@ -161,55 +161,94 @@
             }
         }
         else if(funcion !== 'F(x) = '){/*Si hay funcion de tipo algebraica*/
-            let expAlgebraica = funcion.substring(7).split('+');
+            let expAlgebraica = funcion.substring(7);
 
             for(let x = xCotaInferior; x < xCotaSuperior; x++){/*Recorre los valores de x uno a uno*/
                 let x_mas1 = x+1;
                 let y = -(resultadoSumarExpresionAlgebraica(x, expAlgebraica));
                 let y_mas1 = -(resultadoSumarExpresionAlgebraica(x_mas1, expAlgebraica));
                 pintarLinea(x*paso, y*paso, (x+1)*paso, (y_mas1)*paso, '#f21d00');/*La y es negativa porque sino va hacia abajo*/
-                console.log('x ' + x);
-                console.log('x_mas1 ' + x_mas1);
-                console.log('y ' + y);
-                console.log('y_mas1 ' + y_mas1);
+                //console.log('x ' + x);
+                //console.log('x_mas1 ' + x_mas1);
+                //console.log('y ' + y);
+                //console.log('y_mas1 ' + y_mas1);
                 console.log('**********************')
             }
         }
     }
 
-    function resultadoSumarExpresionAlgebraica(x, expAlgebraica) {
-        let xTotal = 0;/*En las otras funciones es en lo que se utiliza la i del bucle*/
-        let numIzq = '';
-        let numDrch = '';
+    function resultadoSumarExpresionAlgebraica(valorX, expAlgebraica) {/*x valor eje x en un momento dado del bucle*/
+        console.log("Expresion algebraica: "+ expAlgebraica);
+        let resultado = 0;
         let arrayTotal = [];
 
-        for(let j = 0; j < expAlgebraica.length; j++){/* 55X^551 Recorre el array expAlgebraica*/
-
-            if(expAlgebraica[j].indexOf('X') !== -1){/*Habemus x*/
-                xTotal = x;
-                numIzq = expAlgebraica[j].substring(0, expAlgebraica[j].indexOf('X'));
-                if(expAlgebraica[j].indexOf('^') !== -1){/*Habemus una x y potencia*/
-                    numDrch = expAlgebraica[j].substring(expAlgebraica[j].indexOf('^')+1);
-                    numDrch = Number(numDrch);
-                    xTotal = Math.pow(xTotal, numDrch);
-                    if(numIzq !== ''){/*Habemus numIzq x y potencia*/
-                        numIzq = Number(numIzq);
-                        xTotal = numIzq * xTotal;
+        let ultimoCorte = 0;/*Donde acaba un polinomio, encontramos un - o un +*/
+        if(expAlgebraica.indexOf('-') === -1 && expAlgebraica.indexOf('+') === -1){/*Solo contiene un polinomio*/
+            /*No hay ni - ni +*/            /**************************************************************************/
+            /*evaluamos*/                   /************************   SI TIENE SIGNO AL PRINCIPIO   *****************/
+            arrayTotal.push(evaluarPolinomio(valorX, expAlgebraica));
+        }else{
+            for(let i = 0; i < expAlgebraica.length; i++){
+                if((expAlgebraica[i] === '-' || expAlgebraica[i] === '+') && i !== 0){
+                    if(expAlgebraica[i-1] !== '^'){
+                        arrayTotal.push(evaluarPolinomio(valorX, expAlgebraica.substring(ultimoCorte, i)));
+                        ultimoCorte = i;
                     }
                 }
-            }else{/*No hay x*/
-                if(expAlgebraica.indexOf('^') !== -1){/*Habemus una potencia*/
-                    numIzq = expAlgebraica[j].substring(0, expAlgebraica[j].indexOf('^'));
-                    numDrch = expAlgebraica[j].substring(expAlgebraica[j].indexOf('^')+1);
-                    xTotal = Math.pow(numIzq, numDrch);
-                }else{/*No hay potencia*/
-                    xTotal = Number(expAlgebraica);
+            }
+            /*Para coger el polinomio mas a la derecha que el bucle se lo deja sin coger*/
+            arrayTotal.push(evaluarPolinomio(valorX, expAlgebraica.substring(ultimoCorte)));
+        }
+        console.log("Suma expresion algebraica: " + arrayTotal.reduce(function(a, b){ return a + b; }));
+        return arrayTotal.reduce(function(a, b){ return a + b; });/*Sumamos todos los elementos del array*/
+    }
+
+    function evaluarPolinomio(valorX, polinomio) {
+        let resultado = 0;
+        if(polinomio.indexOf('X') !== -1){/*Contiene X*/
+            if(polinomio === 'X'){
+                resultado = valorX;
+            }
+            else if(polinomio.indexOf('^') !== -1){/*Contiene ^*/
+                let numIzq = polinomio.substring(0, polinomio.indexOf('X'));
+                let numPot = Number(polinomio.substring(polinomio.indexOf('^')+1));
+                console.log(numIzq + " POT " + numPot)
+                if(numIzq === '-' || numIzq === '+'){/*es un - o un +*/
+                    if(numIzq === '-'){
+                        resultado = -(Math.pow(valorX, numPot));
+                    }else{
+                        resultado = Math.pow(valorX, numPot);
+                    }
+                }else{
+                    if(numIzq === ''){
+                        resultado = Math.pow(valorX, numPot);
+                    }else{
+                        resultado = Number(numIzq) * (Math.pow(valorX, numPot));
+                    }
+                }
+            }else{/*No contiene ^*/
+                let numIzq = polinomio.substring(0, polinomio.indexOf('X'));
+                if(numIzq === '-' || numIzq === '+'){/*es un - o un +*/
+                    if(numIzq === '-'){
+                        resultado = -(1 * valorX);
+                    }else{
+                        resultado = valorX;
+                    }
+                }else{
+                    resultado = Number(numIzq) * valorX;
                 }
             }
-            arrayTotal.push(xTotal);
+        }else{/*No contiene X*/
+            if(polinomio.indexOf('^') !== -1){/*Contiene ^*/
+                let numIzq = Number(polinomio.substring(0, polinomio.indexOf('^')));
+                let numDrch = Number(polinomio.substring(polinomio.indexOf('^')+1));
+                resultado = Math.pow(numIzq, numDrch);
+            }else{/*No contiene ^*/
+                resultado = Number(polinomio);
+            }
         }
-
-        return arrayTotal.reduce(function(a, b){ return a + b; });/*Sumamos todos los elementos del array*/
+        console.log("Polinomio: " + polinomio + " = " + resultado);
+        return resultado;
     }
 
     function pintarLinea(desdeX, desdeY, hastaX, hastaY, color){
@@ -289,6 +328,7 @@
                     }
                 }
                 else if(btn === '-'){
+                    console.log("pulsa boton menos");
                     if(salida.value === 'F(x) = ' || salida.value[salida.value.length-1] === '^' || salida.value[salida.value.length-1] === '+'){
                         salida.value += '-';
                     }
