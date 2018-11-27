@@ -1,0 +1,204 @@
+#contenedor{
+    display: inline-grid;
+    grid-auto-rows: 75px;
+    grid-gap: 7px;
+    margin-left: 10%;
+    background-color: blue;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #4E648E;
+}
+.contenedor-normal{
+    grid-template-columns: repeat(4, 75px);
+    grid-template-areas:
+        "selector modoCalculadora modoCalculadora reset"
+        "salidaDatos salidaDatos salidaDatos salidaDatos"
+        "siete ocho nueve dividir"
+        "cuatro cinco seis multiplicar"
+        "uno dos tres restar"
+        "cero coma igual sumar";
+}
+.contenedor-cientifica{
+    grid-template-columns: repeat(8, 75px);
+    grid-template-areas:
+        "selector modoCalculadora modoCalculadora salidaDatos salidaDatos salidaDatos salidaDatos reset"
+        "radianes grados funciones funciones siete ocho nueve dividir"
+        "potencia abs pi e cuatro cinco seis multiplicar"
+        "log2 log10 ln sqrt uno dos tres restar"
+        "sen cos tan raizn cero coma igual sumar";
+}
+.contenedor-cientifica-canvas{
+    grid-template-columns: repeat(8, 75px);
+    grid-template-areas:
+            "canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas"
+            "canvas canvas canvas canvas canvas canvas canvas canvas"
+            "x1 x2 x3 x4 x5 x6 x7 x8"
+            "selector modoCalculadora modoCalculadora salidaDatos salidaDatos salidaDatos salidaDatos reset"
+            "radianes grados funciones funciones siete ocho nueve dividir"
+            "potencia abs pi e cuatro cinco seis multiplicar"
+            "log2 log10 ln sqrt uno dos tres restar"
+            "sen cos tan raizn cero coma igual sumar";
+}
+#salidaDatos{
+    grid-area: salidaDatos;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: right;
+    border-radius: 5px;
+}
+.btn{
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    color : white;
+    background-color : #152B55;
+}
+.oculto{
+    display: none;
+}
+.mostrar{
+    display: block;
+}
+#reset{
+    grid-area: reset;
+}
+#selector{
+    grid-area: selector;
+}
+#modoCalculadora{
+    grid-area: modoCalculadora;
+}
+[data-valor="POTENCIA"] {
+    grid-area: potencia;
+}
+[data-valor="ABS"] {
+    grid-area: abs;
+}
+[data-valor="SEN"] {
+    grid-area: sen;
+}
+[data-valor="COS"] {
+    grid-area: cos;
+}
+[data-valor="TAN"] {
+    grid-area: tan;
+}
+[data-valor="LOG10"] {
+    grid-area: log10;
+}
+[data-valor="LOG2"] {
+    grid-area: log2;
+}
+[data-valor="LN"] {
+    grid-area: ln;
+}
+[data-valor="SQRT"] {
+    grid-area: sqrt;
+}
+[data-valor="RAIZN"] {
+    grid-area: raizn;
+}
+[data-valor="PI"] {
+    grid-area: pi;
+}
+[data-valor="E"] {
+    grid-area: e;
+}
+[data-valor="0"] {
+     grid-area: cero;
+}
+[data-valor="1"] {
+    grid-area: uno;
+}
+[data-valor="2"] {
+    grid-area: dos;
+}
+[data-valor="3"] {
+    grid-area: tres;
+}
+[data-valor="4"] {
+    grid-area: cuatro;
+}
+[data-valor="5"] {
+    grid-area: cinco;
+}
+[data-valor="6"] {
+    grid-area: seis;
+}
+[data-valor="7"] {
+    grid-area: siete;
+}
+[data-valor="8"] {
+    grid-area: ocho;
+}
+[data-valor="9"] {
+    grid-area: nueve;
+}
+[data-valor="/"] {
+    grid-area: dividir;
+}
+[data-valor="*"] {
+    grid-area: multiplicar;
+}
+[data-valor="-"] {
+    grid-area: restar;
+}
+[data-valor="+"] {
+    grid-area: sumar;
+}
+[data-valor="."] {
+    grid-area: coma;
+}
+[data-valor="="] {
+    grid-area: igual;
+}
+[data-valor="RADIANES"] {
+    grid-area: radianes;
+    font-weight: bold;
+    background-color: #F23A72;
+}
+[data-valor="GRADOS"] {
+    grid-area: grados;
+    font-weight: bold;
+    background-color: gray;
+}
+[data-valor="FUNCIONES"] {
+    grid-area: funciones;
+    font-size: 40px;
+    font-weight: bold;
+}
+.canvas{
+    display: none;
+}
+#cv{
+    grid-area: canvas;
+}
+[data-valor="X1"] {
+    grid-area: x1;
+}
+[data-valor="X2"] {
+    grid-area: x2;
+}
+[data-valor="X3"] {
+    grid-area: x3;
+}
+[data-valor="X4"] {
+    grid-area: x4;
+}
+[data-valor="X5"] {
+    grid-area: x5;
+}
+[data-valor="X6"] {
+    grid-area: x6;
+}
+[data-valor="X7"] {
+    grid-area: x7;
+}
+[data-valor="X8"] {
+    grid-area: x8;
+}
+.canvas-color-activado{
+    background-color: red;
+}
